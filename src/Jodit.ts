@@ -1044,7 +1044,8 @@ export class Jodit extends ViewWithToolbar implements IJodit {
                 this.options.enableDragAndDropFileToEditor &&
                 this.options.uploader &&
                 (this.options.uploader.url ||
-                    this.options.uploader.insertImageAsBase64URI)
+                    this.options.uploader.insertImageAsBase64URI ||
+                    this.options.uploader.insertImageAsObjectURI)
             ) {
                 this.uploader.bind(this.editor);
             }

@@ -52,7 +52,7 @@ Config.prototype.uploader = {
     data: null,
 
     format: 'json',
-    
+
     method: 'POST',
 
     prepareData(this: Uploader, formData: FormData) {
@@ -348,6 +348,49 @@ export class Uploader extends Component implements IUploader {
         }
 
         fileList = fileList.filter(a => a);
+
+        if (this.options.insertImageAsObjectURI) {
+            let file: File, i: number;
+            for (i = 0; i < fileList.length; i += 1) {
+                file = fileList[i];
+                if (file && file.type) {
+                    const mime: string[] = file.type.match(
+                        /\/([a-z0-9]+)/i
+                    ) as string[];
+                    const extension: string = mime[1]
+                        ? mime[1].toLowerCase()
+                        : '';
+                    if (
+                        this.options.imagesExtensions.indexOf(extension) !== -1
+                    ) {
+                        const url = URL.createObjectURL(file)
+                        console.log('url', url)
+                        const resp: IUploaderData = {
+                            baseurl: '',
+                            files: [url],
+                            isImages: [true],
+                        } as IUploaderData;
+
+                        if (
+                            typeof (
+                                handlerSuccess ||
+                                uploader.options
+                                    .defaultHandlerSuccess
+                            ) === 'function'
+                        ) {
+                            ((handlerSuccess ||
+                                uploader.options
+                                    .defaultHandlerSuccess) as HandlerSuccess).call(
+                                uploader,
+                                resp
+                            );
+                        }
+                    }
+                }
+                (fileList[i] as any) = null;
+            }
+            fileList = fileList.filter(a => a);
+        }
 
         if (fileList.length) {
             const form: FormData = new FormData();
