@@ -163,7 +163,7 @@ export type BuildDataResult =
 export interface IUploaderOptions<T> {
     url: string;
     insertImageAsBase64URI: boolean;
-    insertImageAsObjectURI: boolean;
+    insertImageAsObjectURI: HandlerSuccess;
     imagesExtensions: string[];
     headers?: IDictionary<string> | null;
     data: null | object;

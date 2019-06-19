@@ -386,7 +386,8 @@ export namespace Widget {
             callbacks.upload &&
             editor.options.uploader &&
             (editor.options.uploader.url ||
-                editor.options.uploader.insertImageAsBase64URI)
+                editor.options.uploader.insertImageAsBase64URI ||
+                editor.options.uploader.insertImageAsObjectURI)
         ) {
             const dragbox: HTMLElement = editor.create.fromHTML(
                 '<div class="jodit_draganddrop_file_box">' +

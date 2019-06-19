@@ -154,6 +154,7 @@ export class Ajax {
                 resolve: (this: XMLHttpRequest, resp: object) => any,
                 reject: (error: Error) => any
             ) => {
+                console.log('send')
                 const __parse = (resp: string): object => {
                     let result: object | null = null;
 

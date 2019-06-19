@@ -350,40 +350,40 @@ export class Uploader extends Component implements IUploader {
         fileList = fileList.filter(a => a);
 
         if (this.options.insertImageAsObjectURI) {
+            const successHandler: HandlerSuccess =
+                handlerSuccess || uploader.options.defaultHandlerSuccess;
             let file: File, i: number;
             for (i = 0; i < fileList.length; i += 1) {
                 file = fileList[i];
                 if (file && file.type) {
-                    const mime: string[] = file.type.match(
-                        /\/([a-z0-9]+)/i
-                    ) as string[];
+                    const mime = file.type.match(/\/([a-z0-9]+)/i) as string[];
                     const extension: string = mime[1]
                         ? mime[1].toLowerCase()
                         : '';
                     if (
                         this.options.imagesExtensions.indexOf(extension) !== -1
                     ) {
-                        const url = URL.createObjectURL(file)
-                        console.log('url', url)
+                        const url = URL.createObjectURL(file);
                         const resp: IUploaderData = {
                             baseurl: '',
                             files: [url],
                             isImages: [true],
-                        } as IUploaderData;
+                        };
 
+                        if (typeof successHandler === 'function') {
+                            successHandler.call(uploader, resp);
+                        }
+
+                        if (handlerSuccess) {
+                            handlerSuccess.call(uploader, resp);
+                        }
                         if (
-                            typeof (
-                                handlerSuccess ||
-                                uploader.options
-                                    .defaultHandlerSuccess
-                            ) === 'function'
+                            typeof this.options.insertImageAsObjectURI === 'function'
                         ) {
-                            ((handlerSuccess ||
-                                uploader.options
-                                    .defaultHandlerSuccess) as HandlerSuccess).call(
-                                uploader,
-                                resp
-                            );
+                            this.options.insertImageAsObjectURI.call(uploader, {
+                                ...resp,
+                                extra: file,
+                            });
                         }
                     }
                 }
@@ -706,6 +706,7 @@ export class Uploader extends Component implements IUploader {
                     ) {
                         event.preventDefault();
                         event.stopImmediatePropagation();
+                        console.log('before send');
                         this.sendFiles(
                             event.dataTransfer.files,
                             handlerSuccess,
